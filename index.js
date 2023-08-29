@@ -17,8 +17,7 @@ app.use(cookieParser())
 app.use(session({
   secret: 'secret',
   resave: false,
-  saveUninitialized: true,
-  cookie: { httpOnly: true, maxAge: 3600000, sameSite: 'none' }
+  saveUninitialized: true
 }))
 
 const port = 8000
@@ -83,6 +82,7 @@ app.post('/api/login', async (req, res) => {
   })
 
   req.session.userId = user.id
+  console.log('save session', req.session.userId)
 
   res.send({ message: 'Login successful', token })
 })
@@ -91,7 +91,7 @@ const authenticateToken = (req, res, next) => {
   // const authHeader = req.headers['authorization']
   // const token = authHeader && authHeader.split(' ')[1]
   const token = req.cookies.token
-  console.log(req.session.userId)
+  console.log('session', req.session.userId)
 
   if (token == null) return res.sendStatus(401) // if there isn't any token
 
