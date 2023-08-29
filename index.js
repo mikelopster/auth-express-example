@@ -3,6 +3,7 @@ const express = require('express')
 const mysql = require('mysql2/promise')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
+const session = require('express-session')
 const bcrypt = require('bcrypt')
 
 const app = express()
@@ -12,6 +13,13 @@ app.use(cors({
   origin: ['http://localhost:8888']
 }))
 app.use(cookieParser())
+
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { httpOnly: true, maxAge: 3600000, sameSite: 'none' }
+}))
 
 const port = 8000
 const secret = 'mysecret'
@@ -30,7 +38,7 @@ const initMySQL = async () => {
 
 app.post('/api/register', async (req, res) => {
   const { email, password } = req.body
-
+  
   const [rows] = await conn.query('SELECT * FROM users WHERE email = ?', email)
   if (rows.length) {
       return res.status(400).send({ message: 'Email is already registered' })
@@ -74,6 +82,8 @@ app.post('/api/login', async (req, res) => {
     sameSite: "none",
   })
 
+  req.session.userId = user.id
+
   res.send({ message: 'Login successful', token })
 })
 
@@ -81,6 +91,7 @@ const authenticateToken = (req, res, next) => {
   // const authHeader = req.headers['authorization']
   // const token = authHeader && authHeader.split(' ')[1]
   const token = req.cookies.token
+  console.log(req.session.userId)
 
   if (token == null) return res.sendStatus(401) // if there isn't any token
 
