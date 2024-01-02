@@ -11,4 +11,4 @@ code ชุดนี้เป็นส่วนหนึ่งของ Content 
 [![stripe-express](https://img.youtube.com/vi/JhNxzPHipbY/0.jpg)](https://youtu.be/JhNxzPHipbY)
 
 ### อ่านฉบับบทความได้ที่
-https://docs.mikelopster.dev/blog/auth-express
+https://blog.mikelopster.dev/auth-express
